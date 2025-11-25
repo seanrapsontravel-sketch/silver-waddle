@@ -1,0 +1,48 @@
+name: Daily Racing Scraper
+
+on:
+  schedule:
+    # Runs at 09:00 UTC every day
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allows you to run it manually from the Actions tab for testing
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Ensure local package is installed/available
+          # We can install the current directory in editable mode or just set PYTHONPATH
+          # pip install -e . 
+
+      - name: Run Scraper
+        env:
+          # These secrets must be added in your GitHub Repo Settings
+          SMTP_SERVER: smtp.gmail.com
+          SMTP_PORT: 587
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_RECIPIENT: seanrapson@icloud.com
+          # Add OpenAI key if you use the Q&A feature, though scraper doesn't need it yet
+          # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # Set PYTHONPATH to include src directory
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+          
+          # Run the scraper
+          # Note: We use --tomorrow flag to get the upcoming races
+          python3 -m schools_scraper.cli scrape-abc --email --tomorrow
+
+

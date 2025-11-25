@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schools Scraper - MAT Q&A</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- MAT Selection View -->
+    <div id="mat-selection" class="view">
+        <div class="container">
+            <h1>Multi-Academy Trusts</h1>
+            <div id="mats-list" class="mats-grid">
+                <!-- MATs will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat View -->
+    <div id="chat-view" class="view hidden">
+        <div class="chat-header">
+            <button id="back-button" class="back-btn">← Back</button>
+            <div class="mat-info">
+                <img id="mat-logo" src="" alt="MAT Logo" class="mat-logo">
+                <h2 id="mat-name"></h2>
+            </div>
+        </div>
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+                <div class="message assistant-message">
+                    <div class="message-content">
+                        <p>Hello! I can answer questions about this Multi-Academy Trust based on their newsletters. What would you like to know?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <form id="chat-form" class="chat-form">
+                    <input 
+                        type="text" 
+                        id="question-input" 
+                        class="chat-input" 
+                        placeholder="Ask a question about this trust..."
+                        autocomplete="off"
+                    >
+                    <button type="submit" id="send-button" class="send-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
+
+
