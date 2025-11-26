@@ -365,17 +365,26 @@ class ABCScraper:
                     lambda x: any(term.lower() in x.lower() for term in self.WATCHLIST)
                 )
 
-        # Send email if requested and matches found
-        if send_email and matches:
-            self.send_match_email(matches)
-        elif send_email:
-             # Optional: Send "no matches" email? For now, skip to reduce noise.
-             console.print("[dim]No matches found, skipping email.[/dim]")
+        # Send email if requested
+        if send_email:
+            if matches:
+                console.print(f"[bold green]Found {len(matches)} matches. Sending email...[/bold green]")
+                success = self.send_match_email(matches)
+                if not success:
+                    console.print("[red]FATAL: Email failed to send. Check SMTP credentials in GitHub Secrets.[/red]")
+                    import sys
+                    sys.exit(1)
+            else:
+                console.print("[bold yellow]No watchlist matches found today. No email will be sent.[/bold yellow]")
         
         return df
 
-    def send_match_email(self, matches: List[pd.Series]) -> None:
-        """Send email with matches."""
+    def send_match_email(self, matches: List[pd.Series]) -> bool:
+        """Send email with matches.
+        
+        Returns:
+            True if successful, False otherwise.
+        """
         email = EmailService()
         date_str = datetime.now().strftime("%d-%m-%Y")
         subject = f"🐎 Watchlist Matches Found ({len(matches)}) - {date_str}"
@@ -453,7 +462,7 @@ class ABCScraper:
         </html>
         """
         
-        email.send_notification(subject, body)
+        return email.send_notification(subject, body)
 
 
 def run_scheduled_job(output_path: Optional[str] = None):
